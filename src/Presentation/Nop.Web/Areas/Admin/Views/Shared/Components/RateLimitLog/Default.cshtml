@@ -1,0 +1,60 @@
+@model RateLimitLogListModel
+
+<div class="card card-primary card-outline">
+    <div class="card-header with-border clearfix">
+        <div class="card-title">
+            <i class="fas fa-gauge-high"></i>
+            @T("Admin.Dashboard.RateLimitLog")
+        </div>
+    </div>
+    <div class="card-body">
+        <p>
+            @T("Admin.System.RateLimitLog.Hint")
+        </p>
+        @if (!Model.Logs.Any())
+        {
+            <p>
+                @T("Admin.System.RateLimitLog.Empty")
+            </p>
+        }
+        else
+        {
+            <table class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>@T("Admin.System.Log.Fields.CreatedOn")</th>
+                        <th>@T("Admin.System.Log.Fields.LogLevel")</th>
+                        <th>@T("Admin.System.Log.Fields.ShortMessage")</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var log in Model.Logs)
+                    {
+                        <tr>
+                            <td>
+                                <a asp-controller="Log" asp-action="View" asp-route-id="@log.Id">
+                                    @log.CreatedOn.ToString("g")
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-controller="Log" asp-action="View" asp-route-id="@log.Id">
+                                    @log.LogLevel
+                                </a>
+                            </td>
+                            <td>
+                                <a asp-controller="Log" asp-action="View" asp-route-id="@log.Id">
+                                    @Html.Raw(log.ShortMessage)
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+    <div class="card-footer">
+        <a asp-controller="Log" asp-action="RateLimits">
+            @T("Admin.System.RateLimitLog.ViewAll") (@Model.TotalCount)
+        </a>
+    </div>
+</div>

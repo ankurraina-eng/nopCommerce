@@ -16261,6 +16261,24 @@
   <LocaleResource Name="Admin.System.Log.ViewLogDetails">
     <Value>View log entry details</Value>
   </LocaleResource>
+  <LocaleResource Name="Admin.System.RateLimitLog">
+    <Value>Rate limit log</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.RateLimitLog.Hint">
+    <Value>HTTP 429 responses are retried with exponential backoff (1s, 2s, 4s, up to 32s) and recorded here.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.RateLimitLog.Empty">
+    <Value>No rate limit errors have been recorded.</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.RateLimitLog.ViewAll">
+    <Value>View all rate limit logs</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.Dashboard.RateLimitLog">
+    <Value>Rate limit log</Value>
+  </LocaleResource>
+  <LocaleResource Name="Admin.System.Warnings.RateLimit">
+    <Value><![CDATA[{0} request(s) were rejected with HTTP 429. <a href="{1}">Open the rate limit log</a>.]]></Value>
+  </LocaleResource>
   <LocaleResource Name="Admin.System.Maintenance">
     <Value>Maintenance</Value>
   </LocaleResource>

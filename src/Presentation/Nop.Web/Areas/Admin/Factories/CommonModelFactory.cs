@@ -45,6 +45,7 @@ using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Common;
 using Nop.Web.Areas.Admin.Models.Localization;
 using Nop.Web.Areas.Admin.Models.Topics;
+using Nop.Web.Framework;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Models.Extensions;
 using Nop.Web.Framework.Mvc.Routing;
@@ -980,6 +981,37 @@ public partial class CommonModelFactory : ICommonModelFactory
     }
 
     /// <summary>
+    /// Prepare rate limit warning model
+    /// </summary>
+    /// <param name="models">List of system warning models</param>
+    /// <returns>A task that represents the asynchronous operation</returns>
+    protected virtual async Task PrepareRateLimitWarningModelAsync(IList<SystemWarningModel> models)
+    {
+        ArgumentNullException.ThrowIfNull(models);
+
+        var logs = await _logger.GetAllLogsAsync(message: RateLimitDefaults.MessageMarker, pageIndex: 0, pageSize: 1);
+        if (logs.TotalCount == 0)
+            return;
+
+        var url = "/Admin/Log/RateLimits";
+        var httpContext = _httpContextAccessor.HttpContext;
+        if (httpContext?.RequestServices != null)
+        {
+            var linkGenerator = httpContext.RequestServices.GetService(typeof(LinkGenerator)) as LinkGenerator ?? _linkGenerator;
+            var path = linkGenerator?.GetPathByAction(httpContext, "RateLimits", "Log", new { area = AreaNames.ADMIN });
+            if (!string.IsNullOrEmpty(path))
+                url = path;
+        }
+
+        models.Add(new SystemWarningModel
+        {
+            Level = SystemWarningLevel.Warning,
+            DontEncode = true,
+            Text = string.Format(await _localizationService.GetResourceAsync("Admin.System.Warnings.RateLimit"), logs.TotalCount, url)
+        });
+    }
+
+    /// <summary>
     /// Prepare system warning models
     /// </summary>
     /// <returns>
@@ -1016,6 +1048,9 @@ public partial class CommonModelFactory : ICommonModelFactory
 
         //validate write permissions (the same procedure like during installation)
         await PrepareFilePermissionsWarningModelAsync(models);
+
+        //rate limit
+        await PrepareRateLimitWarningModelAsync(models);
 
         //plugins
         await PreparePluginsWarningModelAsync(models);

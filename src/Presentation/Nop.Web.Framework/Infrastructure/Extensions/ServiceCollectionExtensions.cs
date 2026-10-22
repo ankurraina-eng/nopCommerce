@@ -23,6 +23,7 @@ using Nop.Services.Authentication;
 using Nop.Services.Authentication.External;
 using Nop.Services.Common;
 using Nop.Web.Framework.ClientsideFluentValidation;
+using Nop.Web.Framework.Infrastructure;
 using Nop.Web.Framework.Mvc.ModelBinding.Binders;
 using Nop.Web.Framework.Mvc.Routing;
 using Nop.Web.Framework.Security.Captcha;
@@ -133,7 +134,8 @@ public static class ServiceCollectionExtensions
                             Window = TimeSpan.FromMinutes(1)
                         }));
 
-                options.RejectionStatusCode = commonConfig.RejectionStatusCode;
+                options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+                options.OnRejected = RateLimitRejection.OnRejectedAsync;
             });
         }
 
@@ -440,6 +442,10 @@ public static class ServiceCollectionExtensions
     /// <param name="services">Collection of service descriptors</param>
     public static void AddNopHttpClients(this IServiceCollection services)
     {
+        //retry outbound HTTP 429 responses for every IHttpClientFactory client
+        services.AddTransient<RateLimitRetryHandler>();
+        services.ConfigureHttpClientDefaults(builder => builder.AddHttpMessageHandler<RateLimitRetryHandler>());
+
         //default client
         services.AddHttpClient(NopHttpDefaults.DefaultHttpClient).WithProxy();
 

@@ -790,6 +790,14 @@ public partial class AdminMenu : IAdminMenu
                         },
                         new()
                         {
+                            SystemName = "Rate limit log",
+                            Title = await _localizationService.GetResourceAsync("Admin.System.RateLimitLog"),
+                            PermissionNames = new List<string> { StandardPermission.System.MANAGE_SYSTEM_LOG },
+                            Url = GetMenuItemUrl("Log", "RateLimits"),
+                            IconClass = "far fa-dot-circle"
+                        },
+                        new()
+                        {
                             SystemName = "Warnings",
                             Title = await _localizationService.GetResourceAsync("Admin.System.Warnings"),
                             PermissionNames = new List<string> { StandardPermission.System.MANAGE_MAINTENANCE },

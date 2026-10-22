@@ -1,4 +1,5 @@
 ﻿using Nop.Core.Domain.Logging;
+using Nop.Core.Http;
 using Nop.Services.Customers;
 using Nop.Services.Helpers;
 using Nop.Services.Html;
@@ -146,6 +147,40 @@ public partial class LogModelFactory : ILogModelFactory
                 model.CustomerEmail = log.CustomerId.HasValue ? (await _customerService.GetCustomerByIdAsync(log.CustomerId.Value))?.Email : string.Empty;
             }
         }
+        return model;
+    }
+
+    /// <summary>
+    /// Prepare rate limit log list model
+    /// </summary>
+    /// <param name="count">Number of recent rate limit log entries to prepare</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the rate limit log list model
+    /// </returns>
+    public virtual async Task<RateLimitLogListModel> PrepareRateLimitLogListModelAsync(int count)
+    {
+        if (count < 1)
+            count = 1;
+
+        var logs = await _logger.GetAllLogsAsync(message: RateLimitDefaults.MessageMarker, pageIndex: 0, pageSize: count);
+
+        var model = new RateLimitLogListModel
+        {
+            TotalCount = logs.TotalCount
+        };
+
+        foreach (var log in logs)
+        {
+            model.Logs.Add(new RateLimitLogModel
+            {
+                Id = log.Id,
+                ShortMessage = _htmlFormatter.FormatText(log.ShortMessage),
+                CreatedOn = await _dateTimeHelper.ConvertToUserTimeAsync(log.CreatedOnUtc, DateTimeKind.Utc),
+                LogLevel = await _localizationService.GetLocalizedEnumAsync(log.LogLevel)
+            });
+        }
+
         return model;
     }
 

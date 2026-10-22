@@ -34,6 +34,11 @@
         <div class="container-fluid">
             <div class="form-horizontal">
                 <div class="cards-group">
+                    <div class="row">
+                        <div class="col-md-12">
+                            @await Component.InvokeAsync(typeof(RateLimitLogViewComponent))
+                        </div>
+                    </div>
                     <div class="card card-default">
                         <div class="card-body">
                             <p>
