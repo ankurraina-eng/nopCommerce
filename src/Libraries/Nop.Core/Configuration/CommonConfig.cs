@@ -67,7 +67,7 @@ public partial class CommonConfig : IConfig
     public int QueueCount { get; set; } = 0;
 
     /// <summary>
-    /// Default status code to set on the response when a request is rejected.
+    /// Default status code to set on the response when a request is rejected (HTTP 429 Too Many Requests).
     /// </summary>
-    public int RejectionStatusCode { get; set; } = 503;
+    public int RejectionStatusCode { get; set; } = 429;
 }

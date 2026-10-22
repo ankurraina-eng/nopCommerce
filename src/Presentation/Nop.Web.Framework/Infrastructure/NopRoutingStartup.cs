@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core.Configuration;
+using Nop.Core.Http;
 using Nop.Core.Infrastructure;
 
 namespace Nop.Web.Framework.Infrastructure;
@@ -31,7 +33,23 @@ public partial class NopRoutingStartup : INopStartup
 
         var commonConfig = Singleton<AppSettings>.Instance.Get<CommonConfig>();
         if (commonConfig.PermitLimit > 0)
+        {
             application.UseRateLimiter();
+
+            // Capture the partition key before later middleware authenticates the request.
+            // The rate limiter uses the same pre-auth key, so a successful request must reset that key.
+            application.Use(async (context, next) =>
+            {
+                var partitionKey = RateLimitAttemptTracker.GetPartitionKey(
+                    context.User.Identity?.Name,
+                    context.Request.Headers.Host.ToString());
+
+                await next();
+
+                if (context.Response.StatusCode != StatusCodes.Status429TooManyRequests)
+                    RateLimitAttemptTracker.Reset(partitionKey);
+            });
+        }
     }
 
     /// <summary>

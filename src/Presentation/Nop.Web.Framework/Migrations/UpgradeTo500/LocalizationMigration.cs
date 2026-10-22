@@ -890,6 +890,13 @@ public class LocalizationMigration : MigrationBase
 
             //#8372
             ["Admin.Configuration.Settings.Catalog.CacheProductPrices.Hint"] = "Check to cache product prices. It can significantly improve performance. But you should not enable it if you use price lists, complex discounts, discount requirement rules, or coupon codes.",
+
+            ["Admin.System.RateLimitLog"] = "Rate limit log",
+            ["Admin.System.RateLimitLog.Hint"] = "HTTP 429 responses are retried with exponential backoff (1s, 2s, 4s, up to 32s) and recorded here.",
+            ["Admin.System.RateLimitLog.Empty"] = "No rate limit errors have been recorded.",
+            ["Admin.System.RateLimitLog.ViewAll"] = "View all rate limit logs",
+            ["Admin.Dashboard.RateLimitLog"] = "Rate limit log",
+            ["Admin.System.Warnings.RateLimit"] = "{0} request(s) were rejected with HTTP 429. <a href=\"{1}\">Open the rate limit log</a>.",
         });
 
         #endregion

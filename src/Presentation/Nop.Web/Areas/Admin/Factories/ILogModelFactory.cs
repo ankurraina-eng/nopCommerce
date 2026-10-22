@@ -39,4 +39,14 @@ public partial interface ILogModelFactory
     /// The task result contains the log model
     /// </returns>
     Task<LogModel> PrepareLogModelAsync(LogModel model, Log log, bool excludeProperties = false);
+
+    /// <summary>
+    /// Prepare rate limit log list model
+    /// </summary>
+    /// <param name="count">Number of recent rate limit log entries to prepare</param>
+    /// <returns>
+    /// A task that represents the asynchronous operation
+    /// The task result contains the rate limit log list model
+    /// </returns>
+    Task<RateLimitLogListModel> PrepareRateLimitLogListModelAsync(int count);
 }

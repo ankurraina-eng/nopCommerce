@@ -59,6 +59,14 @@ public partial class LogController : BaseAdminController
         return View(model);
     }
 
+    [CheckPermission(StandardPermission.System.MANAGE_SYSTEM_LOG)]
+    public virtual async Task<IActionResult> RateLimits()
+    {
+        var model = await _logModelFactory.PrepareRateLimitLogListModelAsync(50);
+
+        return View(model);
+    }
+
     [HttpPost]
     [CheckPermission(StandardPermission.System.MANAGE_SYSTEM_LOG)]
     public virtual async Task<IActionResult> LogList(LogSearchModel searchModel)

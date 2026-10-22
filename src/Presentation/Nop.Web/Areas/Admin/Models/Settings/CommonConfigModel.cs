@@ -46,7 +46,7 @@ public partial record CommonConfigModel : BaseNopModel, IConfigModel
     public int QueueCount { get; set; } = 0;
 
     [NopResourceDisplayName("Admin.Configuration.AppSettings.Common.RejectionStatusCode")]
-    public int RejectionStatusCode { get; set; } = 503;
+    public int RejectionStatusCode { get; set; } = 429;
 
     #endregion
 }
